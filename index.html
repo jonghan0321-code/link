@@ -8,6 +8,7 @@
     <style>
         body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px; font-size: 12px; -webkit-text-size-adjust: none; }
         
+        /* 🌟 PDF 영역: PC에서 중앙 정렬을 유지하되 캡처 시 오차 방지 */
         #document-area {
             background-color: white; padding: 30px 40px; width: 210mm; 
             min-height: 296mm; 
@@ -78,7 +79,7 @@
                 <div class="form-row"><label>POC Email:</label><input type="email" id="shipEmail"></div>
             </div>
             <div class="col">
-                <div class="col-title">Pickup Address <label style="font-size: 10px; font-weight: normal;"><input type="checkbox" id="sameAsShip" onchange="copyAddress()"> Same as Ship-to</label></div>
+                <div class="col-title">Pickup Address <label style="font-size: 10px; font-weight: normal; cursor: pointer;"><input type="checkbox" id="sameAsShip" onchange="copyAddress()"> Same as Ship-to</label></div>
                 <div class="form-row"><label>Date:</label><input type="text" id="pickDate" class="date-input" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
                 <div class="form-row"><label>POC Name:</label><input type="text" id="pickName"></div>
                 <div class="form-row"><label>Company Name:</label><input type="text" id="pickCompany"></div>
@@ -124,7 +125,7 @@
             </div>
             <div class="sign-right">
                 <div class="sign-row" style="justify-content: flex-end;"><label style="width: auto; margin-right: 10px;">Date:</label><input type="text" id="signDate" class="date-input" style="width: 130px;" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
-                <div class="footer-info">B2B Display Support<br>DEC 2025<br>Rev: 04</div>
+                <div class="footer-info">B2B Display Support<br>DEC 2025 | Rev: 04</div>
             </div>
         </div>
     </div>
@@ -193,10 +194,13 @@
         }
 
         function downloadPDF() {
+            // 🌟 캡처 전 화면 상단으로 강제 스크롤 및 문서 위치 계산
             window.scrollTo(0, 0);
+            const element = document.getElementById('document-area');
+            const rect = element.getBoundingClientRect(); // 문서의 현재 절대 위치 계산
+
             const name = document.getElementById('signName').value || "Unknown";
             const company = document.getElementById('shipCompany').value || "Company";
-            const element = document.getElementById('document-area');
 
             const opt = {
                 margin: 0,
@@ -206,10 +210,12 @@
                     scale: 2, 
                     useCORS: true, 
                     logging: false,
-                    scrollY: 0,
-                    scrollX: 0,
-                    x: 0, // 🌟 캡처 시작 X좌표를 0으로 고정
-                    y: 0  // 🌟 캡처 시작 Y좌표를 0으로 고정
+                    // 🌟 캡처 시작점을 문서의 실제 왼쪽 좌표(rect.left)로 강제 고정
+                    scrollX: -window.scrollX,
+                    scrollY: -window.scrollY,
+                    x: rect.left, 
+                    width: element.offsetWidth,
+                    windowWidth: document.documentElement.offsetWidth
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
