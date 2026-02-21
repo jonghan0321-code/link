@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Only Authorization Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px; font-size: 12px; }
+        
+        #document-area {
+            background-color: white;
+            padding: 30px 40px; 
+            width: 210mm; 
+            min-height: 296mm; 
+            margin: 0 auto;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header { position: relative; margin-bottom: 15px; }
+        .header h1 { font-size: 24px; margin: 0; color: #1428A0; font-weight: bold; }
+        .header p { margin: 1px 0; font-size: 11px; }
+
+        /* 우측 상단 이미지 스타일 */
+        .top-right-img {
+            position: absolute;
+            top: 0;
+            right: 0;
+            max-width: 120px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .form-title { text-align: center; font-size: 15px; font-weight: bold; margin: 8px 0; text-decoration: underline; }
+
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%; border: none; border-bottom: 1px solid #999; outline: none; padding: 3px 4px;
+            box-sizing: border-box; font-family: inherit; font-size: 12px; background: transparent;
+        }
+
+        .date-input {
+            width: 100%; border: none; border-bottom: 1px solid #999; outline: none; padding: 3px 4px;
+            box-sizing: border-box; font-family: inherit; font-size: 12px; background: transparent;
+            cursor: pointer;
+        }
+    
+        .address-table { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid #000; margin-bottom: 8px; }
+        .col { padding: 8px; }
+        .col:first-child { border-right: 2px solid #000; }
+        .col-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 3px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .form-row { display: flex; margin-bottom: 3px; align-items: center; }
+        .form-row label { width: 105px; font-weight: bold; font-size: 11px; flex-shrink: 0; }
+        
+        .note { font-size: 10px; font-style: italic; margin-bottom: 15px; }
+
+        .serial-section { margin-bottom: 15px; }
+        .serial-section label { font-weight: bold; display: block; margin-bottom: 3px; }
+        textarea { width: 100%; height: 50px; border: 1px solid #999; padding: 5px; box-sizing: border-box; resize: none; font-family: inherit; font-size: 12px; }
+
+        .terms { font-size: 10.5px; line-height: 1.3; margin-bottom: 20px; }
+        .terms h3 { font-size: 12px; margin: 10px 0 3px 0; font-weight: bold; }
+        .terms p { margin: 3px 0; }
+        .terms ol { margin-top: 3px; padding-left: 20px; }
+        .terms li { margin-bottom: 2px; }
+
+        .signature-section { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .sign-left { width: 62%; }
+        .sign-right { width: 35%; display: flex; flex-direction: column; align-items: flex-end; }
+        
+        .sign-row { display: flex; margin-bottom: 12px; align-items: center; width: 100%; }
+        .sign-row label { width: 70px; font-weight: bold; font-size: 12px; }
+        
+        canvas { border: 1px solid #000; background-color: #fff; cursor: crosshair; width: 100%; height: 80px; }
+        
+        .footer-info { font-size: 10px; text-align: right; color: #333; margin-top: 10px; line-height: 1.2; font-weight: bold; }
+
+        .action-buttons { text-align: center; margin: 20px auto; width: 210mm; }
+        button { padding: 10px 20px; font-size: 14px; cursor: pointer; background-color: #000; color: white; border: none; border-radius: 4px; margin: 0 5px; }
+        button.secondary { background-color: #666; }
+    </style>
+</head>
+<body>
+
+    <div id="document-area">
+        <div class="header">
+            <img src="https://via.placeholder.com/120x60?text=LOGO" alt="Logo" class="top-right-img">
+            
+            <h1>SAMSUNG</h1>
+            <p><strong>SAMSUNG ELECTRONICS AMERICA, INC</strong></p>
+            <p>700 Sylvan Avenue, Englewood Cliffs, NJ 07632</p>
+            <p>Tel: 866-726-4249</p>
+        </div>
+
+        <div class="form-title">DELIVERY ONLY AUTHORIZATION FORM</div>
+
+        <div class="address-table">
+            <div class="col">
+                <div class="col-title">Ship-To Address</div>
+                <div class="form-row"><label>Date:</label><input type="text" id="shipDate" class="date-input" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
+                <div class="form-row"><label>POC Name:</label><input type="text" id="shipName"></div>
+                <div class="form-row"><label>Company Name:</label><input type="text" id="shipCompany"></div>
+                <div class="form-row"><label>Street Address 1:</label><input type="text" id="shipAddr1"></div>
+                <div class="form-row"><label>Street Address 2:</label><input type="text" id="shipAddr2"></div>
+                <div class="form-row"><label>POC Phone:</label><input type="tel" id="shipPhone"></div>
+                <div class="form-row"><label>POC Email:</label><input type="email" id="shipEmail"></div>
+            </div>
+            
+            <div class="col">
+                <div class="col-title">
+                    Pickup Address 
+                    <label style="font-size: 11px; font-weight: normal; cursor: pointer;">
+                        <input type="checkbox" id="sameAsShip" onchange="copyAddress()"> Same as Ship-to
+                    </label>
+                </div>
+                <div class="form-row"><label>Date:</label><input type="text" id="pickDate" class="date-input" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
+                <div class="form-row"><label>POC Name:</label><input type="text" id="pickName"></div>
+                <div class="form-row"><label>Company Name:</label><input type="text" id="pickCompany"></div>
+                <div class="form-row"><label>Street Address 1:</label><input type="text" id="pickAddr1"></div>
+                <div class="form-row"><label>Street Address 2:</label><input type="text" id="pickAddr2"></div>
+                <div class="form-row"><label>POC Phone:</label><input type="tel" id="pickPhone"></div>
+                <div class="form-row"><label>POC Email:</label><input type="email" id="pickEmail"></div>
+            </div>
+        </div>
+        <div class="note">Note:<span style="color: red;"> Alternate pickup locations must be within 20 miles of the ship-to address.</span></div>
+
+        <div class="serial-section">
+            <label>List all the Serial Numbers below:</label>
+            <textarea placeholder="Enter serial numbers here..."></textarea>
+        </div>
+
+        <div class="terms">
+            <p><strong><u>Please read the following Terms and Conditions carefully. Your acceptance is required for the exchange of your product.</u></strong></p>
+            <h3><strong>Exchange Contract Terms and Conditions</strong></h3>
+            <p>Samsung Electronics America may, at its sole discretion and during the warranty period, complete a <strong><u>delivery only</u></strong> shipment to replace a defective Samsung unit owned by the Customer with a new or factory reconditioned unit. Customer acknowledges:</p>
+            <ol>
+                <li>After the replacement unit is received, the defective unit must be returned to Samsung. The defective unit will be picked up by Samsung's designated carrier.</li>
+                <li>Customer must make defective unit available for pick up no later than five business days after receipt of any replacement unit, unless Samsung otherwise agrees.</li>
+                <li>Customer is responsible to dismount identified defective unit from any installed location, unless otherwise agreed by Samsung.</li>
+            </ol>
+            <p>Customer must contact <strong>Samsung's Exchange Coordinator at 866-726-4249 (option #2 for Visual Display)</strong> between 9AM and 9PM Eastern Standard Time to schedule a pickup.</p>
+            <p><strong><u>Customer will be invoiced for non-returned product.</u></strong></p>
+            <p style="margin-top: 10px;"><strong>If you agree to the stated terms, please return this completed form. Your exchange order(s) will be placed on the same business day if received by 2PM EST.</strong></p>
+        </div>
+
+        <div class="signature-section">
+            <div class="sign-left">
+                <p style="font-weight: bold; margin-bottom: 12px;">Agreed and acknowledged by:</p>
+                <div class="sign-row">
+                    <label>Name:</label>
+                    <input type="text" id="signName" style="width: 100%;">
+                </div>
+                <div class="sign-row" style="align-items: flex-start; margin-bottom: 0;">
+                    <label style="margin-top: 5px;">Signature:</label>
+                    <div style="flex-grow: 1;">
+                        <canvas id="signaturePad"></canvas>
+                        <div style="font-size: 10px; color: #666; text-align: right; cursor: pointer; margin-top: 2px;" onclick="clearSignature()">[Clear Signature]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="sign-right">
+                <div class="sign-row" style="justify-content: flex-end;">
+                    <label style="width: auto; margin-right: 10px;">Date:</label>
+                    <input type="text" id="signDate" class="date-input" style="width: 130px;" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)">
+                </div>
+                <div class="footer-info">B2B Display Support<br>DEC 2025<br>Rev: 04</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="secondary" onclick="clearSignature()">Clear Signature</button>
+        <button onclick="downloadPDF()">💾 Save as PDF</button>
+    </div>
+
+    <script>
+        // 날짜 MM/DD/YYYY 변환
+        function handleDateBlur(input) {
+            if (input.value) {
+                const parts = input.value.split("-");
+                if (parts.length === 3) {
+                    input.type = "text";
+                    input.value = `${parts[1]}/${parts[2]}/${parts[0]}`;
+                }
+            } else { input.type = "text"; }
+        }
+
+        function copyAddress() {
+            const isChecked = document.getElementById('sameAsShip').checked;
+            const shipFields = ['shipDate', 'shipName', 'shipCompany', 'shipAddr1', 'shipAddr2', 'shipPhone', 'shipEmail'];
+            const pickFields = ['pickDate', 'pickName', 'pickCompany', 'pickAddr1', 'pickAddr2', 'pickPhone', 'pickEmail'];
+            for (let i = 0; i < shipFields.length; i++) {
+                const pickInput = document.getElementById(pickFields[i]);
+                if (isChecked) {
+                    pickInput.value = document.getElementById(shipFields[i]).value;
+                    pickInput.readOnly = true;
+                    pickInput.style.backgroundColor = "#eee";
+                } else {
+                    pickInput.value = "";
+                    pickInput.readOnly = false;
+                    pickInput.style.backgroundColor = "transparent";
+                }
+            }
+        }
+
+        const canvas = document.getElementById('signaturePad');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.onload = resizeCanvas;
+        window.onresize = resizeCanvas;
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            if (e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); });
+        canvas.addEventListener('mousemove', (e) => { if (!isDrawing) return; const pos = getPos(e); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); });
+        window.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); }, { passive: false });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!isDrawing) return; const pos = getPos(e); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); }, { passive: false });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+        function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        function downloadPDF() {
+            window.scrollTo(0, 0);
+            const name = document.getElementById('signName').value || "Unknown";
+            const company = document.getElementById('shipCompany').value || "Company";
+            const element = document.getElementById('document-area');
+            const opt = {
+                margin: 0,
+                filename: `Delivery_Auth_${company}_${name}.pdf`,
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true, scrollY: 0, y: 0, logging: false }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: 'avoid-all' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
