@@ -8,7 +8,8 @@
         body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px; font-size: 12px; -webkit-text-size-adjust: none; }
         
         #document-area {
-            background-color: white; padding: 30px 40px; width: 210mm; min-height: 296mm; 
+            background-color: white; padding: 30px 40px; width: 210mm; 
+            min-height: 296mm; /* 🌟 고정 높이 대신 최소 높이로 변경 (화면 가시성 확보) */
             margin: 0 auto; box-sizing: border-box; box-shadow: 0 0 10px rgba(0,0,0,0.1);
             color: #333; display: flex; flex-direction: column; position: relative;
         }
@@ -20,36 +21,37 @@
         .form-title { text-align: center; font-size: 15px; font-weight: bold; margin: 8px 0; text-decoration: underline; }
 
         input[type="text"], input[type="email"], input[type="tel"], .date-input {
-            width: 100%; border: none; border-bottom: 1px solid #999; outline: none; padding: 3px 4px;
+            width: 100%; border: none; border-bottom: 1px solid #999; outline: none; padding: 2px 4px;
             box-sizing: border-box; font-family: inherit; font-size: 12px; background: transparent;
         }
     
         .address-table { display: grid; grid-template-columns: 1fr 1fr; border: 2px solid #000; margin-bottom: 8px; }
-        .col { padding: 4px 8px; }
+        .col { padding: 5px 8px; }
         .col:first-child { border-right: 2px solid #000; }
         .col-title { font-weight: bold; font-size: 13px; margin-bottom: 5px; border-bottom: 1px solid #000; padding-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
-        .form-row { display: flex; margin-bottom: 1px; align-items: center; }
+        .form-row { display: flex; margin-bottom: 2px; align-items: center; }
         .form-row label { width: 105px; font-weight: bold; font-size: 11px; flex-shrink: 0; }
         
         textarea { width: 100%; height: 50px; border: 1px solid #999; padding: 5px; box-sizing: border-box; resize: none; font-size: 12px; }
 
+        /* 🌟 약관 영역 간격 최적화 */
         .terms { font-size: 10.5px; line-height: 1.3; margin-bottom: 15px; }
-        .terms ol { padding-left: 20px; }
+        .terms h3 { font-size: 12px; margin: 10px 0 5px 0; font-weight: bold; }
+        .terms p { margin: 4px 0; }
+        .terms ol { margin-top: 5px; padding-left: 20px; }
+        .terms li { margin-bottom: 4px; }
 
-        .signature-section { margin-top: auto; padding-top: 5px; display: flex; justify-content: space-between; }
+        .signature-section { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: flex-start; }
         .sign-left { width: 62%; }
         .sign-right { width: 35%; display: flex; flex-direction: column; align-items: flex-end; }
         
-        /* 🌟 서명란 렉 방지 및 터치 최적화 */
         #signaturePad { border: 1px solid #000; background-color: #fff; width: 100%; height: 80px; touch-action: none; cursor: crosshair; }
         
-        .footer-info { font-size: 10px; text-align: right; color: #333; margin-top: 5px; font-weight: bold; }
+        .footer-info { font-size: 10px; text-align: right; color: #333; margin-top: 10px; font-weight: bold; line-height: 1.2; }
 
         .action-buttons { text-align: center; margin: 20px auto; width: 210mm; }
         button { padding: 10px 20px; font-size: 14px; cursor: pointer; background-color: #000; color: white; border: none; border-radius: 4px; margin: 0 5px; }
         button.secondary { background-color: #666; }
-
-        /* 🌟 모바일에서 레이아웃이 깨지는 @media 쿼리를 제거하여 PC와 동일하게 유지함 */
     </style>
 </head>
 <body>
@@ -87,7 +89,7 @@
             </div>
         </div>
 
-        <div class="note" style="font-size: 9px; margin-bottom: 10px;">Note: <span style="color: red;">Alternate pickup locations must be within 20 miles of the ship-to address.</span></div>
+        <div class="note" style="margin-bottom: 10px;">Note: <span style="color: red; font-size: 10px;">Alternate pickup locations must be within 20 miles of the ship-to address.</span></div>
 
         <div class="serial-section">
             <label>List all the Serial Numbers below:</label>
@@ -110,19 +112,19 @@
 
         <div class="signature-section">
             <div class="sign-left">
-                <p style="font-weight: bold; margin-bottom: 5px;">Agreed and acknowledged by:</p>
+                <p style="font-weight: bold; margin-bottom: 10px;">Agreed and acknowledged by:</p>
                 <div class="sign-row"><label>Name:</label><input type="text" id="signName" style="width: 100%;"></div>
-                <div class="sign-row" style="align-items: flex-start;">
+                <div class="sign-row" style="align-items: flex-start; margin-bottom: 0;">
                     <label style="margin-top: 5px;">Signature:</label>
                     <div style="flex-grow: 1;">
                         <canvas id="signaturePad"></canvas>
-                        <div style="font-size: 10px; color: #666; text-align: right; cursor: pointer;" onclick="clearSignature()">[Clear Signature]</div>
+                        <div style="font-size: 10px; color: #666; text-align: right; cursor: pointer; margin-top: 2px;" onclick="clearSignature()">[Clear Signature]</div>
                     </div>
                 </div>
             </div>
             <div class="sign-right">
-                <div class="sign-row" style="justify-content: flex-end;"><label style="width: auto; margin-right: 5px;">Date:</label><input type="text" id="signDate" class="date-input" style="width: 110px;" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
-                <div class="footer-info">B2B Display Support | DEC 2025 | Rev: 04</div>
+                <div class="sign-row" style="justify-content: flex-end;"><label style="width: auto; margin-right: 10px;">Date:</label><input type="text" id="signDate" class="date-input" style="width: 130px;" placeholder="MM/DD/YYYY" onfocus="(this.type='date')" onblur="handleDateBlur(this)"></div>
+                <div class="footer-info">B2B Display Support<br>DEC 2025<br>Rev: 04</div>
             </div>
         </div>
     </div>
@@ -133,6 +135,7 @@
     </div>
 
     <script>
+        // 날짜 변환 및 사인/복사 로직은 이전과 동일
         const canvas = document.getElementById('signaturePad');
         const ctx = canvas.getContext('2d');
         let isDrawing = false;
@@ -144,6 +147,7 @@
             canvas.height = rect.height;
         }
         window.onload = resizeCanvas;
+        window.onresize = resizeCanvas;
 
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
@@ -196,7 +200,7 @@
             const company = document.getElementById('shipCompany').value || "Company";
             const element = document.getElementById('document-area');
 
-            // 🌟 모바일 PDF 생성 최적화 옵션
+            // 🌟 PDF 생성 시에만 높이를 A4에 맞게 강제 조절하여 1장으로 만듦
             const opt = {
                 margin: 0,
                 filename: `Delivery_Auth_${company}_${name}.pdf`,
@@ -204,7 +208,7 @@
                 html2canvas: { 
                     scale: 2, 
                     useCORS: true, 
-                    windowWidth: 1024, // 🌟 모바일에서도 데스크톱 너비로 렌더링하도록 강제
+                    windowWidth: 1024,
                     scrollY: 0
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -216,4 +220,3 @@
     </script>
 </body>
 </html>
-
