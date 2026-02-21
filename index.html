@@ -8,7 +8,6 @@
     <style>
         body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px; font-size: 12px; -webkit-text-size-adjust: none; }
         
-        /* 🌟 PDF 영역: PC에서 중앙 정렬을 유지하되 캡처 시 오차 방지 */
         #document-area {
             background-color: white; padding: 30px 40px; width: 210mm; 
             min-height: 296mm; 
@@ -194,29 +193,38 @@
         }
 
         function downloadPDF() {
-            // 🌟 캡처 전 화면 상단으로 강제 스크롤 및 문서 위치 계산
             window.scrollTo(0, 0);
             const element = document.getElementById('document-area');
-            const rect = element.getBoundingClientRect(); // 문서의 현재 절대 위치 계산
-
             const name = document.getElementById('signName').value || "Unknown";
             const company = document.getElementById('shipCompany').value || "Company";
+
+            // 🌟 기기 감지 (Mobile 여부 확인)
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            let html2canvasOptions = {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                scrollY: 0,
+                scrollX: 0
+            };
+
+            // 🌟 기기별 맞춤 설정 적용
+            if (isMobile) {
+                // 모바일: 가로 1024px 데스크톱 뷰로 강제 렌더링
+                html2canvasOptions.windowWidth = 1024;
+            } else {
+                // PC: 문서 실제 위치 계산해서 정중앙 캡처
+                const rect = element.getBoundingClientRect();
+                html2canvasOptions.x = rect.left;
+                html2canvasOptions.width = element.offsetWidth;
+            }
 
             const opt = {
                 margin: 0,
                 filename: `Delivery_Auth_${company}_${name}.pdf`,
                 image: { type: 'jpeg', quality: 1.0 },
-                html2canvas: { 
-                    scale: 2, 
-                    useCORS: true, 
-                    logging: false,
-                    // 🌟 캡처 시작점을 문서의 실제 왼쪽 좌표(rect.left)로 강제 고정
-                    scrollX: -window.scrollX,
-                    scrollY: -window.scrollY,
-                    x: rect.left, 
-                    width: element.offsetWidth,
-                    windowWidth: document.documentElement.offsetWidth
-                },
+                html2canvas: html2canvasOptions,
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
